@@ -1,0 +1,131 @@
+Precondizioni (JAVA):
+- fare una verifica dell'installazione di java (lanciare il comando "java --version" senza virgolette)
+- se al punto precedente non è installato java, lanciare il comando "sudo apt install default-jre" (senza virgolette) e rieseguire di nuovo il comando "java --version" (senza virgolette)
+- fare un check sulla variabile JAVA_HOME (lanciare il comando "echo $JAVA_HOME" senza virgolette) e controllare se è presente il path della JAVA VIRTUAL MACHINE inserito all'interno
+- se al punto precedente non è presente, verificare se "java-8-openjdk-amd64" (oppure "java-11-openjdk-amd64")  sia effettivamente presente al path "/usr/lib/jvm/" 
+- lanciare il comando "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" (senza virgolette) oppure "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" (se è installato Java 11 e non Java 8)
+
+NOTE DI COMPATIBILITA': è consigliabile installare openjdk 8 per questioni legate alla compatibilità di tutto il pacchetto hadoop e dei suoi servizi (https://linuxize.com/post/install-java-on-ubuntu-20-04/)
+---> lanciare "gedit ~/.bashrc"
+inserire alla fine del file il seguente: 
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+
+
+Precondizioni (HADOOP)   
+- lanciare il comando "echo $HADOOP_HOME" per verificare il percorso di installazione di Hadoop
+- se al punto precedente non è installato Hadoop, seguire i seguenti step in basso:
+-> in /home/<utente> (al posto di <utente> sostituire l'utenza della macchina) lanciare "wget https://downloads.apache.org/hadoop/common/hadoop-3.1.3/hadoop-3.1.3.tar.gz" (senza virgolette)
+-> lanciare "tar xzf hadoop-3.1.3.tar.gz" (senza virgolette)
+-> lanciare "gedit ~/.bashrc", copiare ed incollare il testo seguente in fondo allo script (dopo l'ultimo "fi"):
+
+export SPARK_HOME=/opt/giotto/spark
+export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+
+export HADOOP_HOME=/opt/giotto/hadoop
+export HADOOP_INSTALL=$HADOOP_HOME
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export HADOOP_USER_NAME=hdfs
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
+export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+export YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop
+
+-> premere in successione CTRL+O (per salvare il file), INVIO e successivamente CTRL+X
+-> andare al percorso "/home/<utente>/hadoop-3.1.3/etc/hadoop"
+-> lanciare il comando "nano hadoop-env.sh", decommentare i seguenti export: JAVA_HOME, HADOOP_HOME ed HADOOP_CONF_DIR
+-> editare JAVA_HOME ed HADOOP_HOME con i path di ambiente usati ai punti precedenti:
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export HADOOP_HOME=/home/<utente>/hadoop-3.1.3
+
+-> premere in successione CTRL+O (per salvare il file), INVIO e successivamente CTRL+X
+-> lanciare "gedit core-site.xml" (senza virgolette) e copiare il testo seguente:
+
+<configuration>
+<property>
+<name>fs.defaultFS</name>
+<value>hdfs://localhost:9000</value>
+</property>
+<property>
+<name>hadoop.tmp.dir</name>
+<value>/opt/giotto/hadoop/hadooptmpdata</value>
+</property>
+</configuration>
+
+-> premere in successione CTRL+O (per salvare il file), INVIO e successivamente CTRL+X
+-> lanciare "gedit hdfs-site.xml" (senza virgolette) e copiare il testo seguente:
+
+<configuration>
+<property>
+<name>dfs.replication</name>
+<value>1</value>
+<name>dfs.name.dir</name>
+<value>file:///opt/giotto/hadoop/hdfs/namenode</value>
+<name>dfs.data.dir</name>
+<value>file:///opt/giotto/hadoop/hdfs/datanode</value>
+<name>dfs.permissions.enabled</name>
+<value>true</value>
+<name>dfs.permissions.superusergroup</name>
+<value>supergroup</value>
+</property>
+</configuration>
+
+
+-> premere in successione CTRL+O (per salvare il file), INVIO e successivamente CTRL+X
+-> lanciare “gedit yarn-site.xml” (senza virgolette) e copiare il testo seguente:
+
+<configuration>
+<property>
+<name>yarn.nodemanager.aux-services</name>
+<value>mapreduce_shuffle</value>
+</property>
+<property>
+<name>yarn.nodemanager.aux-services.mapreduce_shuffle.class</name>
+<value>org.apache.hadoop.mapred.ShuffleHandler</value>
+</property>
+<property>
+<name>yarn.application.classpath</name>
+<value> $HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/share/hadoop/common/*,$HADOOP_COMMON_HOME/share/hadoop/common/lib/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/*,$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/lib/*,$HADOOP_YARN_HOME/share/hadoop/yarn/*,$HADOOP_YARN_HOME/share/hadoop/yarn/lib/*</value>
+</property>
+</configuration>
+
+-> premere in successione CTRL+O (per salvare il file), INVIO e successivamente CTRL+X
+-> lanciare "gedit mapred-site.xml" (senza virgolette) e copiare il testo seguente:
+
+
+<configuration>
+<property>
+<name>mapreduce.framework.name</name>
+<value>yarn</value>
+</property>
+<property>
+<name>yarn.app.mapreduce.am.env</name>
+<value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+</property>
+<property>
+<name>mapreduce.map.env</name>
+<value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+</property>
+<property>
+<name>mapreduce.reduce.env</name>
+<value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+</property>
+<property>
+<name>mapreduce.jobhistory.address</name>
+<value>cm:10020</value>
+<description>Host and port for Job History Server (default 0.0.0.0:10020)</description>
+</property>
+</configuration>
+
+-> riavviare la macchina, lanciando il comando di "reboot" (senza virgolette) oppure "sudo shutdown -r now" (senza virgolette)
+
+
+Precondizioni (SPARK)
+
+- verificare che il bin "spark-submit" sia presente nel percorso  "/opt/giotto/spark/bin/spark-submit" (indicato nel foglio excel)
+- verifica che il jar "spark-examples_2.11-2.4.3.0.jar" sia presente nel percorso  "/opt/giotto/spark/examples/jars/spark-examples_2.11-2.4.3.0.jar"
