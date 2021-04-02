@@ -1,0 +1,18 @@
+----- TestDFSIO ----- : write
+            Date & time: Thu Jul 23 18:01:48 CEST 2020
+        Number of files: 10
+ Total MBytes processed: 100
+      Throughput mb/sec: 11,62
+ Average IO rate mb/sec: 12,56
+  IO rate std deviation: 3,63
+     Test exec time sec: 64,9
+
+----- TestDFSIO ----- : write
+            Date & time: Thu Jul 23 18:03:07 CEST 2020
+        Number of files: 10
+ Total MBytes processed: 100
+      Throughput mb/sec: 12,62
+ Average IO rate mb/sec: 13,57
+  IO rate std deviation: 3,76
+     Test exec time sec: 63,56
+

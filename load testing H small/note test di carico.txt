@@ -1,0 +1,75 @@
+Test Carico H-Piattaforma Small (tutti i test vanno eseguiti con i permessi di root)
+
+- Test 1 (Algoritmo calcola il PiGreco utllizzando il Metodo di Montecarlo.
+ L'input indica la dimensione del campione casuale da utilizzare per il calcolo del PiGreco e indica anche il numero di iterazioni per calcolare  PiGreco.)
+
+1) Aprire una shell per il monitoraggio dei job lanciando il seguente comando:
+
+tail -f /opt/giotto/hadoop/logs/hadoop.log
+
+2) Aprire un'altra shell da root:
+
+-> "sudo su" (senza virgolette)
+-> immettere la password di root della macchina
+-> echo $SPARK_HOME (per verificare se esiste il percorso dove è installato Apache Spark)
+-> aprire lo script "test1.sh" per impostare il valore numerico dell'input (vedi commento accanto nella scelta indicato da #) e salvare lo script
+-> lanciare il comando "sh test1.sh" verificando di trovarsi nel percorso in cui è effettivamente presente lo script
+-> a script ultimato accedere alla pagina http://10.206.197.54:8088/cluster/apps/FINISHED, andare alla colonna "Tracking UI", cliccare la voce History (http://hopstressawsltst01:8088/proxy/application_1592899336158_0005/) associata al nome dell'application SparkPi (http://10.206.197.54:8088/cluster/app/application_1593676909555_0001).
+Assicurarsi che al click su History non si apra una pagina bianca, in cui si evidenzia il codice di errore ERR_NAME_NOT_RESOLVED (Impossibile raggiungere il sito)
+-> All'interno della pagina di History scegliere dal menu a sinistra Job->Counters. 
+-> Memorizzare i risultati facendo uno screenshot
+
+
+- Test 2 (Metodo di Montecarlo)
+Si fa la stessa procedura del Test 1 e si adopera lo script test2.sh, verificare eventualmente l'input settato, togliendo il cancelletto se si desidera quel dato input e inserendo il cancelletto laddove l'input assegnato non sia quello desiderato ed assicurandosi di andare al path dove è presente lo script stesso e di avere accesso come root
+
+- Test 3: Map/Reduce Job - TeraGen
+Si fa la stessa procedura del Test 1 e si adopera lo script test3.sh, verificare eventualmente la size settata, togliendo il cancelletto se si desidera quella data size e inserendo il cancelletto laddove la size assegnata non sia quella desiderata ed assicurandosi di andare al path dove è presente lo script stesso e di avere accesso come root.
+Indicare eventualmente OUTPUT_DIR_TERAGEN e TERAGEN_PATH, se si vuole che la cartella di output ed il percorso di destinazione dell'output del teragen siano quelli desiderati
+
+- Test 4: Map/Reduce Job - TeraSort
+Si adopera lo script test4.sh, bisogna indicare INPUT_DIR_TERAGEN ed OUTPUT_DIR_TERASORT, fare eventualmente una verifica di tutte le variabili path di ambiente impostati nello script, scegliendo un PATH_TERASORT differente. 
+IMPORTANTE: Il PATH_TERAGEN indicato deve essere necessariamente il percorso di destinazione adoperato nel test 3 indicato al punto precedente.
+
+- Test 5: Map/Reduce Job - TeraValidation
+Si adopera lo script test5.sh, indicare il REPORT_DIR ed il REPORT_PATH relativi alla cartella e al percorso di destinazione del report
+IMPORTANTE: OUTPUT_DIR_TERASORT e TERASORT_PATH indicati nello script devono essere necessariamente la cartella ed il percorso di destinazione adoperati nel test 4, indicato al punto precedente.
+
+
+- Test 6 - TestDFSIO clean
+Si adopera lo script test6.sh, bisogna verificare che HDFS_HOME contenga all'interno un percorso accessibile nel filesystem della macchina. Verificare anche che HADOOP_PATH e HADOOP_MAPREDUCE_JOBCLIENT_JAR_PATH contengano percorsi accessibili nel filesystem della macchina.
+
+
+- Test 7 - TestDFSIO write
+Si adopera lo script test7.sh, verificare eventualmente la size settata, togliendo il cancelletto se si desidera quella data size e inserendo il cancelletto laddove la size assegnata non sia quella desiderata ed assicurandosi di andare al path dove è presente lo script stesso e di avere accesso come root.
+
+
+- Test 8 - TestDFSIO write with replication factor
+Si adopera lo script test8.sh, verificare eventualmente la size settata, togliendo il cancelletto se si desidera quella data size e inserendo il cancelletto laddove la size assegnata non sia quella desiderata ed assicurandosi di andare al path dove è presente lo script stesso e di avere accesso come root.
+Per impostare il fattore di replicazione, configurare la variabile REPL_FACTOR.
+Verificare che HADOOP_PATH, HADOOP_MAPREDUCE_JOBCLIENT_JAR_PATH, HDFS_HOME contengano percorsi accessibili nel filesystem della macchina.
+Verficare che la SUB_DIR contenga un percorso corretto a valle dell'elaborazione completata in modo che la verifica del fattore di replica adoperato avvenga correttamente (modificare la variabile SUB_DIR se necessario)
+
+IMPORTANTE: 
+Inizialmente bisogna eseguire lo script commentando il blocco di righe [52,63] con l'operatore #, usare il comando "cd /benchmarks/TestDFSIO/ && ls" (senza virgolette). 
+Fatto ciò segnarsi le sottodirectory della cartella TestDFSIO che sono state create su un notepad a parte ed inserire quella desiderata nello script in corrispondenza della variabile SUB_DIR (riga 53). Decommentare il blocco di righe [52,63] e rieseguire lo script, assicurandosi di commentare il blocco di righe [46-48]).
+
+
+- Test 9 - TestDFSIO read
+
+
+Si adopera lo script test8.sh, verificare eventualmente la size settata, togliendo il cancelletto se si desidera quella data size e inserendo il cancelletto laddove la size assegnata non sia quella desiderata ed assicurandosi di andare al path dove è presente lo script stesso e di avere accesso come root.
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+

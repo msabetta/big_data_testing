@@ -1,0 +1,18 @@
+Test Carico-Spark
+
+- Test 0 - Creazione file di input partendo da uno piccolo.
+Si specifica la dimensione del file, accedendo allo script createFile.sh e cambiando la variabile DIM (Fare attenzione a non creare un file troppo grande e considerare sempre le dimensioni del filesystem)
+Si esegue test0.sh come script per il test indicato.
+
+- Test 1 - Caricamento file in HDFS
+Si esegue test1.sh per il test indicato. Controllare le variabili HDFS_HOME, DIR_DESTINAZIONE ed HDFS_PATH, in modo che le directory ed i percorsi siano coerenti ed accessibili nel filesystem della macchina (fare lo stesso controllo nello script put_hdfsFile.sh)
+
+
+- Test 2 - Client WordCount
+Si esegue test2.sh, specificando all'interno dello script la dimensione del file ed il nome del file. Controllare che tutte le variabili dello script relativi ai path, alle directory e alle configurazioni di WordCount Spark Job siano coerenti prima di far partire lo script indicato.
+
+
+- Test 3 - Cluster WordCount
+Si esegue test3.sh, specificando all'interno dello script la dimensione del file ed il nome del file. Controllare che tutte le variabili dello script relativi ai path, alle directory e alle configurazioni di WordCount Spark Job siano coerenti prima di far partire lo script indicato.
+
+
